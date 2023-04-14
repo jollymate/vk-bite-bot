@@ -2,6 +2,7 @@ from vk_api.longpoll import VkLongPoll
 from vk_api.longpoll import VkEventType
 import vk_captchasolver as vc
 import threading
+import datetime
 import random
 import vk_api
 import time
@@ -24,6 +25,17 @@ longpoll = VkLongPoll(vk_session)
 m_file = open("words.txt", encoding="utf-8", errors="ignore")
 msgs = [t for t in m_file.read().split("\n") if t]
 m_file.close()
+
+now = datetime.datetime.now()
+n = str(now).replace(" ", "_").replace(":", "-").split(".")[0]
+log_path = f"logs/log_{n}.txt"
+
+
+def write_log(info):
+    print(info)
+    log = open(log_path, "at", encoding='utf-8', errors='ignore')
+    log.write(str(info)+"\n")
+    log.close()
 
 
 def thr_st(void, arg=()):
@@ -62,6 +74,11 @@ while True:
                 try:
                     rep_to_user = event_msg['items'][0]['reply_message']['from_id']
                     if rep_to_user == cfg.acc_id:
+                        if event.text:
+                            write_log("*" * 50)
+                            write_log(f"Айди чата: {chat_id}")
+                            write_log(f"От кого: https://vk.com/id{event.user_id}")
+                            write_log(f"Сообщение: {event.text}")
                         ch = 1
                 except:
                     pass
@@ -74,6 +91,11 @@ while True:
                     if kf_pos > -1:
                         link = event.text[kf_pos:].split(" ")[0]
                         vk.messages.joinChatByInviteLink(link=link)
+                    else:
+                        write_log("*" * 50)
+                        write_log("Сообщение в личке")
+                        write_log(f"От кого: https://vk.com/id{event.user_id}")
+                        write_log(f"Сообщение: {event.text}")
                 if ch == 1 and chat_id not in chat_ignore and user_id not in user_ignore and user_id > 0:
                     try:
                         vk.messages.setActivity(
