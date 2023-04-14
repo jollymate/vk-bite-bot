@@ -1,7 +1,7 @@
 ## БОТ БАЙТЕР ВК| BITE BOT VK
 
 <picture>
-  <img width=50% height=50% alt="" src="https://i.imgur.com/kGGLSwb.jpeg">
+  <img width=50% height=50% alt="" src="https://i.imgur.com/iDMXPIM.jpg">
 </picture>
 <br>
 Подпишись на наш телеграм https://t.me/holey_moon
