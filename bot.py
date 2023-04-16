@@ -62,15 +62,56 @@ def friends():
             pass
 
 
+def send_message(peer, text, reply_to=True, reply_id=None):
+    try:
+        if reply_to:
+            vk.messages.send(
+                peer_id=peer,
+                random_id=random.randint(1, 999999),
+                message=text,
+                reply_to=reply_id
+            )
+        else:
+            vk.messages.send(
+                peer_id=peer,
+                random_id=random.randint(1, 999999),
+                message=text
+            )
+    except vk_api.Captcha as e:
+        answer = vc.solve(sid=e.sid, s=1)
+        if reply_to:
+            vk.messages.send(
+                peer_id=peer,
+                message=text,
+                random_id=random.randint(1, 999999),
+                reply_to=reply_id,
+                captcha_key=answer,
+                captcha_sid=e.sid
+            )
+        else:
+            vk.messages.send(
+                peer_id=peer,
+                message=text,
+                random_id=random.randint(1, 999999),
+                captcha_key=answer,
+                captcha_sid=e.sid
+            )
+
+
 thr_st(friends, ())
 
 while True:
     try:
         for event in longpoll.listen():
             if event.type == VkEventType.MESSAGE_NEW and not event.from_me:
+                msg = random.choice(msgs)
+                peer_id = event.peer_id
+                chat_id = peer_id - 2000000000
+                user_id = event.user_id
                 ch = random.choice(chance)
                 msg_id = event.message_id
                 event_msg = vk.messages.getById(message_ids=msg_id)
+                isreply = False
                 try:
                     rep_to_user = event_msg['items'][0]['reply_message']['from_id']
                     if rep_to_user == cfg.acc_id:
@@ -80,12 +121,12 @@ while True:
                             write_log(f"От кого: https://vk.com/id{event.user_id}")
                             write_log(f"Сообщение: {event.text}")
                         ch = 1
+                        isreply = True
                 except:
                     pass
-                msg = random.choice(msgs)
-                peer_id = event.peer_id
-                chat_id = peer_id - 2000000000
-                user_id = event.user_id
+                if ch == 1 and not isreply and cfg.answer_only_on_replies:
+                    ch = 0
+
                 if event.text and chat_id < 0:
                     kf_pos = event.text.find("https://vk.me/join/")
                     if kf_pos > -1:
@@ -105,22 +146,16 @@ while True:
                     except:
                         pass
                     time.sleep(cfg.send_delay)
-                    try:
-                        vk.messages.send(
-                            peer_id=peer_id,
-                            random_id=random.randint(1, 999999),
-                            message=msg,
-                            reply_to=msg_id
-                        )
-                    except vk_api.Captcha as e:
-                        answer = vc.solve(sid=e.sid, s=1)
-                        vk.messages.send(
-                            peer_id=peer_id,
-                            message=msg,
-                            random_id=random.randint(1, 999999),
-                            reply_to=msg_id,
-                            captcha_key=answer,
-                            captcha_sid=e.sid
-                        )
+                    if cfg.reply_only == 1:
+                        send_message(peer_id, msg, reply_id=msg_id)
+                    elif cfg.reply_only == 2:
+                        reply = random.choice([True, False])
+                        if reply:
+                            send_message(peer_id, msg, reply_id=msg_id)
+                        else:
+                            send_message(peer_id, msg, reply_to=False)
+                    elif cfg.reply_only == 0:
+                        send_message(peer_id, msg, reply_to=False)
+
     except:
         pass
