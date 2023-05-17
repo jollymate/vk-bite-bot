@@ -8,9 +8,12 @@
 <br>
 
 ### УСТАНОВКА
+
+Устанавливаем python3.8 - 3.10
+
 Устанавливаем модуль vk_api
 ```
-pip install vk_api
+pip install vk_api vk_captchasolver
 ```
 ### НАСТРОЙКА
 
