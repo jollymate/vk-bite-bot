@@ -62,9 +62,8 @@ while True:
                 chat_id = peer_id - 2000000000
                 user_id = event.user_id
                 msg_id = event.message_id
-                if chat_id not in chat_ignore and user_id not in user_ignore and user_id > 0:
+                if chat_id not in chat_ignore and user_id not in user_ignore and user_id > 0 and event.from_me is False:
                     ch = random.choice(chance)
-                    event_msg = vk.messages.getById(message_ids=msg_id)
                     try:
                         if cfg.acc_id in event.raw['mentions']:
                             ch = 1
