@@ -77,6 +77,11 @@ while True:
                             link = event.text[kf_pos:].split(" ")[0]
                             vk.messages.joinChatByInviteLink(link=link)
                     if ch == 1:
+                        vk.messages.setActivity(
+                            peer_id=peer_id,
+                            type="typing"
+                        )
+                        time.sleep(random.randint(5, 7))
                         msg = random.choice(msgs)
                         try:
                             vk.messages.send(
