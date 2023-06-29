@@ -1,6 +1,6 @@
 [SETTINGS]
-token = vk1.a.LqHy_2alxXhtdMwdvXHUnn9AwYiejoa7rJLfqezAX224yYaE2LFqWA9vewne3jyOAlR76ic9hb8j1SK22J2BSqe8tCEErAx9xRRDOZsldaEVEoDXi4SAW7armkR8UnaBkc-7spNiA464lPUD_hCo8xX47ZlyvuuQDA70GwIxRI-UjF9K6DOBLdZ8x3V-cejJNnw9kWmgzhtB23IzUA4-cw
+token = tkn_code
 chance = 3
-acc_id = 808529961
+acc_id = 2
 user_ignore = 1,2
 chat_ignore = 5,6
