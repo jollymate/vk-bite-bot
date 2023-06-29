@@ -1,6 +1,5 @@
 from vk_api.longpoll import VkLongPoll
 from vk_api.longpoll import VkEventType
-import vk_captchasolver as vc
 import configparser
 import threading
 import random
@@ -96,16 +95,7 @@ while True:
                                 message=msg,
                                 reply_to=msg_id
                             )
-                        except vk_api.Captcha as e:
-                            answer = vc.solve(sid=e.sid, s=1)
-                            time.sleep(5)
-                            vk.messages.send(
-                                peer_id=peer_id,
-                                message=msg,
-                                random_id=random.randint(1, 999999),
-                                reply_to=msg_id,
-                                captcha_key=answer,
-                                captcha_sid=e.sid
-                            )
+                        except:
+                            pass
     except KeyboardInterrupt:
         break
