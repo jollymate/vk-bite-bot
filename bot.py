@@ -1,21 +1,27 @@
 from vk_api.longpoll import VkLongPoll
 from vk_api.longpoll import VkEventType
 import vk_captchasolver as vc
+import configparser
 import threading
 import random
 import vk_api
 import time
-import cfg
 
 
-token = cfg.token
+config = configparser.ConfigParser()
+config.read('cfg.txt', encoding='utf-8')
+token = config['SETTINGS']['token']
+chance = int(config['SETTINGS']['chance'])
+acc_id = int(config['SETTINGS']['acc_id'])
+user_ignore = config['SETTINGS']['user_ignore'].replace(' ', '').split(',')
+chat_ignore = config['SETTINGS']['chat_ignore'].replace(' ', '').split(',')
+
+
 headers = {
     "User-Agent": "Mozilla/5.0 (Android 10; Mobile; rv:100.0) Gecko/100.0 Firefox/100.0",
     "Connection": "keep-alive"
 }
-user_ignore = cfg.user_ignore
-chat_ignore = cfg.chat_ignore
-chance = list(range(cfg.chance))
+chance = list(range(chance))
 
 vk_session = vk_api.VkApi(token=token)
 vk_session.http.headers.update(headers)
@@ -28,7 +34,7 @@ m_file.close()
 
 def print_msg(u_id, text):
     print("*" * 50)
-    print("Сообщение в личке")
+    print("Упоминание в чате")
     print(f"От кого: https://vk.com/id{u_id}")
     print(f"Сообщение: {text}")
 
@@ -62,10 +68,10 @@ while True:
                 chat_id = peer_id - 2000000000
                 user_id = event.user_id
                 msg_id = event.message_id
-                if chat_id not in chat_ignore and user_id not in user_ignore and user_id > 0 and event.from_me is False:
+                if str(chat_id) not in chat_ignore and str(user_id) not in user_ignore and user_id > 0 and event.from_me is False:
                     ch = random.choice(chance)
                     try:
-                        if cfg.acc_id in event.raw['mentions']:
+                        if acc_id in event.raw[6]['mentions']:
                             ch = 1
                             print_msg(user_id, event.text)
                     except:
@@ -103,5 +109,3 @@ while True:
                             )
     except KeyboardInterrupt:
         break
-    except:
-        pass
